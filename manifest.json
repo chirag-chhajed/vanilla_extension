@@ -27,12 +27,25 @@
     "permissions": [
         "activeTab",
         "tabs",
-        "scripting"
+        "scripting",
+        "favicon"
     ],
     "commands": {
         "open-popup": {
             "suggested_key": "Ctrl+Shift+Y",
             "description": "Inject a script on the page"
         }
-    }
+    },"web_accessible_resources": [
+        {
+            "resources": [
+                "_favicon/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "extension_ids": [
+                "*"
+            ]
+        }
+    ]
 }

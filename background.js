@@ -11,5 +11,3 @@ chrome.commands.onCommand.addListener(async (command) => {
     chrome.tabs.sendMessage(tab.id, { command: "open-popup" });
   }
 });
-
-// ...
