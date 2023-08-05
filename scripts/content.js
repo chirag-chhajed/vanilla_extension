@@ -1,4 +1,4 @@
-console.log("Hey I am running from a chrome extension, do you know it")
+console.log("Hey I am running from a chrome extension, do you know it");
 // content.js
 
 // Function to create and show the modal
@@ -45,20 +45,16 @@ function createModal() {
   });
 }
 
-// Check if the body tag exists
-// if (document.body) {
-//   // Create and show the modal
-//   createModal();
-// } else {
-//   // If the body tag doesn't exist yet, wait for the DOMContentLoaded event
-//   document.addEventListener("DOMContentLoaded", createModal);
-// }
-
 chrome.runtime.onMessage.addListener((message) => {
-  console.log(message)
+  console.log(message);
   if (message.command === "open-popup") {
     // Create and show the modal when the message is received
     createModal();
   }
 });
 
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.command === "open_index") {
+    chrome.tabs.create({ url: "index.html" });
+  }
+})

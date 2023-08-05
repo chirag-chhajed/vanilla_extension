@@ -21,7 +21,7 @@
             ]
         }
     ],
-    "background":{
+    "background": {
         "service_worker": "background.js"
     },
     "permissions": [
@@ -34,8 +34,15 @@
         "open-popup": {
             "suggested_key": "Ctrl+Shift+Y",
             "description": "Inject a script on the page"
+        },
+        "open_index": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+H"
+            },
+            "description": "Opens index.html"
         }
-    },"web_accessible_resources": [
+    },
+    "web_accessible_resources": [
         {
             "resources": [
                 "_favicon/*"
