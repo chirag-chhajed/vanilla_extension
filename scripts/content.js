@@ -1,35 +1,20 @@
 console.log("Hey I am running from a chrome extension, do you know it");
+import '../modal.css'
 // content.js
-
 // Function to create and show the modal
 function createModal() {
-  // Check if the modal already exists, if yes, remove it before creating a new one
-  const existingModal = document.getElementById("customModal");
-  if (existingModal) {
-    existingModal.remove();
-  }
-
   // Create the modal container
   const modalContainer = document.createElement("div");
   modalContainer.id = "customModal";
-  modalContainer.style.display = "flex";
-  modalContainer.style.justifyContent = "center";
-  modalContainer.style.alignItems = "center";
-  modalContainer.style.position = "fixed";
-  modalContainer.style.top = "0";
-  modalContainer.style.left = "0";
-  modalContainer.style.width = "100%";
-  modalContainer.style.height = "100%";
-  modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  modalContainer.classList.add("modal-container");
 
   // Create the modal content
   const modalContent = document.createElement("div");
-  modalContent.style.backgroundColor = "white";
-  modalContent.style.padding = "20px";
-  modalContent.style.borderRadius = "5px";
+  modalContent.classList.add("modalContent");
 
   // Add some content to the modal
-  modalContent.textContent = "This is a modal. Click outside to close.";
+  modalContent.textContent =
+    "This is a modal. Click outside or press Esc to close.";
 
   // Add the content to the container
   modalContainer.appendChild(modalContent);
@@ -37,13 +22,31 @@ function createModal() {
   // Add the container to the body
   document.body.appendChild(modalContainer);
 
-  // Close the modal when clicking outside of it
-  modalContainer.addEventListener("click", (event) => {
+  // Close the modal when clicking outside of it or pressing Esc key
+  const closeModal = () => {
+    modalContainer.remove();
+    document.body.classList.remove("modal-open");
+    document.removeEventListener("click", handleOutsideClick);
+    document.removeEventListener("keydown", handleEscKeyPress);
+  };
+
+  const handleOutsideClick = (event) => {
     if (event.target === modalContainer) {
-      modalContainer.remove();
+      closeModal();
     }
-  });
+  };
+
+  const handleEscKeyPress = (event) => {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  };
+
+  document.body.classList.add("modal-open");
+  document.addEventListener("click", handleOutsideClick);
+  document.addEventListener("keydown", handleEscKeyPress);
 }
+
 
 chrome.runtime.onMessage.addListener((message) => {
   console.log(message);

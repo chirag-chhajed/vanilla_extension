@@ -1,0 +1,35 @@
+body.modal-open {
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    /* Glassmorphism effect: adjust the blur radius as needed */
+}
+
+/* Modal Container */
+#customModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    /* Change from "fixed" to "absolute" */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Modal Content */
+#customModal .modalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    color: #333;
+    /* Light mode text color: adjust as needed */
+}
+
+/* Dark mode */
+body.modal-open.dark-mode #customModal .modalContent {
+    background-color: #1a202c;
+    /* Dark mode background color: adjust as needed */
+    color: #e5e7eb;
+    /* Dark mode text color: adjust as needed */
+}
