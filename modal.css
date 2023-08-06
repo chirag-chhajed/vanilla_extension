@@ -22,47 +22,105 @@ body.modal-open {
 
 /* Modal Content */
 #customModal .modalContent {
-    padding: 10px;
-    border-radius: 25px;
-    color: #fff;
-    /* White font color for contrasting with the background */
-    backdrop-filter: blur(17px) saturate(177%);
-    -webkit-backdrop-filter: blur(17px) saturate(177%);
-    background-color: rgba(17, 25, 40, 0.89);
-    /* Darker background color with alpha for transparency */
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    width: 80%;
-    /* Adjust the width as needed */
-    margin: 0 auto;
-    /* Center the modal horizontally */
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form button {
+    border: none;
+    background: none;
+    color: #8b8ba7;
+}
+
+/* styling of whole input container */
+.form {
+    --timing: 0.3s;
+    --width-of-input: 200px;
+    --height-of-input: 40px;
+    --border-height: 2px;
+    --input-bg: #fff;
+    --border-color: #2f2ee9;
+    --border-radius: 30px;
+    --after-border-radius: 1px;
+    position: relative;
+    width: var(--width-of-input);
+    height: var(--height-of-input);
     display: flex;
     align-items: center;
+    padding-inline: 0.8em;
+    border-radius: var(--border-radius);
+    transition: border-radius 0.5s ease;
+    background: var(--input-bg, #fff);
 }
 
-input {
+/* styling of Input */
+.input {
+    font-size: 0.9rem;
+    background-color: transparent;
     width: 100%;
-    max-width: 300px;
-    height: 45px;
-    padding: 12px;
-    border-radius: 16px;
-    border: 1.5px solid lightgrey;
-    outline: none;
-    background-color: #172121;
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: 0px 0px 20px -18px;
-    color: #e5e5f7;
+    height: 100%;
+    padding-inline: 0.5em;
+    padding-block: 0.7em;
+    border: none;
+    color: black;
 }
 
-input:hover {
-    border: 2px solid lightgrey;
-    box-shadow: 0px 0px 20px -17px;
+/* styling of animated border */
+.form:before {
+    content: "";
+    position: absolute;
+    background: var(--border-color);
+    transform: scaleX(0);
+    transform-origin: center;
+    width: 100%;
+    height: var(--border-height);
+    left: 0;
+    bottom: 0;
+    border-radius: 1px;
+    transition: transform var(--timing) ease;
 }
 
-input:active {
-    transform: scale(0.95);
+/* Hover on Input */
+.form:focus-within {
+    border-radius: var(--after-border-radius);
+}
+input{
+    all: unset;
 }
 
 input:focus {
-    width: 400px;
-    border: 2px solid grey;
+    outline: none;
+}
+
+/* here is code of animated border */
+.form:focus-within:before {
+    transform: scale(1);
+}
+
+/* styling of close button */
+/* == you can click the close button to remove text == */
+.reset {
+    border: none;
+    background: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* close button shown when typing */
+input:not(:placeholder-shown)~.reset {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* sizing svg icons */
+.form svg {
+    width: 17px;
+    margin-top: 3px;
 }
