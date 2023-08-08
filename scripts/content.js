@@ -103,3 +103,18 @@ chrome.runtime.onMessage.addListener((request) => {
     chrome.tabs.create({ url: "index.html" });
   }
 })
+
+chrome.storage.local.get("storage", function (result) {
+  const storageData = result.storage; // Retrieve the "storage" value
+
+  if (typeof storageData !== "undefined") {
+    try {
+      const storage = JSON.parse(storageData); // Parse the JSON data
+      console.log("Get", storage);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
+  } else {
+    console.log("Storage data is undefined.");
+  }
+});

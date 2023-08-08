@@ -7,12 +7,26 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app">
-      Hello World
-      <input type="text" id="linkInput" placeholder="Enter a link" />
-      <button id="getFaviconButton">Get Favicon</button>
-      <div id="faviconContainer"></div>
-    </div>
+    <div class="form-container">
+    <form id="form">
+      <div class="form-field">
+        <label for="url">URL</label>
+        <input type="text" id="url" name="url" required autocomplete="off">
+      </div>
+      <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required autocomplete="off">
+      </div>
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div class="form-submit">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+    
     <script type="module" src="main.js"></script>
   </body>
 </html>

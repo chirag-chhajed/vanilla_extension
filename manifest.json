@@ -26,7 +26,9 @@
         "activeTab",
         "tabs",
         "scripting",
-        "favicon"
+        "favicon",
+        "unlimitedStorage",
+        "storage"
     ],
     "commands": {
         "open-popup": {
