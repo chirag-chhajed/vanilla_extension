@@ -8,25 +8,40 @@
   </head>
   <body>
     <div class="form-container">
-    <form id="form">
-      <div class="form-field">
-        <label for="url">URL</label>
-        <input type="text" id="url" name="url" required autocomplete="off">
-      </div>
-      <div class="form-field">
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" required autocomplete="off">
-      </div>
-      <div class="form-field">
-        <label for="description">Description</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
-      </div>
-      <div class="form-submit">
-        <button type="submit">Submit</button>
-      </div>
-    </form>
-  </div>
-    
+      <form id="form">
+        <div class="form-field">
+          <label for="url">URL</label>
+          <input type="text" id="url" name="url" required autocomplete="off" />
+        </div>
+        <div class="form-field">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label for="isPinned">Pin it</label>
+          <input type="checkbox" name="isPinned" id="isPinned" />
+        </div>
+        <div class="form-submit">
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+
     <script type="module" src="main.js"></script>
   </body>
 </html>

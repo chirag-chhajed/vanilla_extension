@@ -1,4 +1,5 @@
 import "./style.css";
+import { nanoid } from "nanoid";
 
 // popup.js
 function faviconURL(u) {
@@ -7,7 +8,49 @@ function faviconURL(u) {
   url.searchParams.set("size", "32");
   return url.toString();
 }
-const keyToRemove = "storage"; // Replace with the key you want to remove
+async function fetchWithTimeout(url, timeout) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  console
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+async function fetchTitleAndDescription(url) {
+  try {
+    const response = await fetchWithTimeout(url, 10000); // Timeout after 10 seconds
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const html = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const title = doc.querySelector("title").textContent;
+    const metaDescription = doc.querySelector('meta[name="description"]');
+    const description = metaDescription
+      ? metaDescription.getAttribute("content")
+      : "";
+    console.log(title, description);
+    return { title, description };
+  } catch (error) {
+    console.error("Error fetching or parsing content:", error);
+    return { title: "", description: "" };
+  }
+}
+
+// Example usage
+
+// const keyToRemove = "storage"; // Replace with the key you want to remove
 // chrome.storage.local.remove(keyToRemove, function () {
 //   console.log("Item removed from storage:", keyToRemove);
 // });
@@ -16,6 +59,9 @@ const form = document.getElementById("form");
 const linkInput = document.getElementById("url");
 const title = document.getElementById("title");
 const description = document.getElementById("description");
+const isPinned = document.getElementById("isPinned");
+
+console.log(isPinned.checked);
 
 chrome.storage.local.get("storage", function (result) {
   const storageData = result.storage; // Retrieve the "storage" value
@@ -38,14 +84,45 @@ chrome.storage.onChanged.addListener(function (changes, area) {
     console.log("Updated Storage:", newStorage);
   }
 });
+let debounceTimeout;
+linkInput.addEventListener("input", async function () {
+  clearTimeout(debounceTimeout); // Clear the previous timeout if it exists
+
+  debounceTimeout = setTimeout(async () => {
+    const url = linkInput.value;
+
+    if (isValidURL(url)) {
+      const { title: fetchedTitle, description: fetchedDescription } =
+        await fetchTitleAndDescription(url);
+      title.value = fetchedTitle;
+      description.value = fetchedDescription;
+    } else {
+      title.value = ""; // Clear title if URL is invalid
+      description.value = ""; // Clear description if URL is invalid
+    }
+  }, 300); // Adjust the debounce delay as needed
+});
+function isValidURL(url) {
+  const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  return pattern.test(url);
+}
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const url = linkInput.value;
   const titleValue = title.value;
   const descriptionValue = description.value;
+  const isPin = isPinned.checked;
   const img = faviconURL(url);
-  const data = { url, titleValue, descriptionValue, img };
+  fetchTitleAndDescription(url);
+  const data = {
+    id: nanoid(),
+    url,
+    titleValue,
+    descriptionValue,
+    img,
+    isPin,
+  };
 
   chrome.storage.local.get("storage", function (result) {
     const storedData = result.storage; // Retrieve the "storage" value
@@ -60,5 +137,8 @@ form.addEventListener("submit", function (e) {
       }
     );
   });
+  linkInput.value = "";
+  title.value = "";
+  description.value = "";
+  isPinned.checked = false;
 });
-

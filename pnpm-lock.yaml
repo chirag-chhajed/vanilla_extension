@@ -2,7 +2,11 @@ lockfileVersion: 5.4
 
 specifiers:
   '@crxjs/vite-plugin': ^1.0.14
+  nanoid: ^4.0.2
   vite: ^4.4.5
+
+dependencies:
+  nanoid: 4.0.2
 
 devDependencies:
   '@crxjs/vite-plugin': 1.0.14_vite@4.4.8
@@ -974,6 +978,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /nanoid/4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /node-releases/2.0.13:
     resolution: {integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==}
