@@ -91,7 +91,7 @@ linkInput.addEventListener("input", async function () {
   debounceTimeout = setTimeout(async () => {
     const url = linkInput.value;
 
-    if (isValidURL(url)) {
+    if (url) {
       const { title: fetchedTitle, description: fetchedDescription } =
         await fetchTitleAndDescription(url);
       title.value = fetchedTitle;
@@ -100,12 +100,12 @@ linkInput.addEventListener("input", async function () {
       title.value = ""; // Clear title if URL is invalid
       description.value = ""; // Clear description if URL is invalid
     }
-  }, 300); // Adjust the debounce delay as needed
+  }, 1000); // Adjust the debounce delay as needed
 });
-function isValidURL(url) {
-  const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-  return pattern.test(url);
-}
+// function isValidURL(url) {
+//   const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+//   return pattern.test(url);
+// }
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
