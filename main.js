@@ -1,6 +1,20 @@
 import "./style.css";
 import { nanoid } from "nanoid";
 
+let data;
+
+chrome.runtime.sendMessage({ action: "getData" }, (response) => {
+  if (response) {
+    console.log("Received data from background:");
+    data = response;
+    console.log(response);
+    updateDataInMainContent(data)
+    // Process the received data here
+  } else {
+    console.error("Failed to retrieve data from background");
+  }
+});
+
 // popup.js
 function faviconURL(u) {
   const url = new URL(chrome.runtime.getURL("/_favicon/"));
@@ -61,8 +75,6 @@ const title = document.getElementById("title");
 const description = document.getElementById("description");
 const isPinned = document.getElementById("isPinned");
 
-console.log(isPinned.checked);
-
 // chrome.storage.local.get("storage", function (result) {
 //   const storageData = result.storage; // Retrieve the "storage" value
 
@@ -115,7 +127,7 @@ form.addEventListener("submit", function (e) {
   const isPin = isPinned.checked;
   const img = faviconURL(url);
   fetchTitleAndDescription(url);
-  const data = {
+  const newData = {
     id: nanoid(),
     url,
     titleValue,
@@ -123,39 +135,34 @@ form.addEventListener("submit", function (e) {
     img,
     isPin,
   };
-  chrome.runtime.sendMessage({ action: "addData", data }, (response) => {
-    if (response.success) {
-      console.log("Data added to IndexedDB successfully");
-      linkInput.value = "";
-      title.value = "";
-      description.value = "";
-      isPinned.checked = false;
-    } else {
-      console.error("Failed to add data to IndexedDB");
+  chrome.runtime.sendMessage(
+    { action: "addData", data: newData },
+    (response) => {
+      if (response.success) {
+        console.log("Data added to IndexedDB successfully");
+        linkInput.value = "";
+        title.value = "";
+        description.value = "";
+        isPinned.checked = false;
+
+        // Fetch updated data and update UI
+        chrome.runtime.sendMessage({ action: "getData" }, (response) => {
+          if (response) {
+            console.log("Received data from background:");
+            console.log(response);
+            updateDataInMainContent(response);
+          } else {
+            console.error("Failed to retrieve data from background");
+          }
+        });
+      } else {
+        console.error("Failed to add data to IndexedDB");
+      }
     }
-  });
-  // Assuming you have set up the form and input elements correctly
-
-  // Assuming you have defined the deleteData function as you showed before
-
-  // chrome.storage.local.get("storage", function (result) {
-  //   const storedData = result.storage; // Retrieve the "storage" value
-
-  //   const newStorage = storedData ? JSON.parse(storedData) : [];
-  //   const updatedStorage = [...newStorage, data];
-
-  //   chrome.storage.local.set(
-  //     { storage: JSON.stringify(updatedStorage) },
-  //     function () {
-  //       console.log("Storage updated:", updatedStorage);
-  //     }
-  //   );
-  // });
-  linkInput.value = "";
-  title.value = "";
-  description.value = "";
-  isPinned.checked = false;
+  );
 });
+
+
 
 function deleteData(idToDelete) {
   console.log("Deleting data with ID:", idToDelete);
@@ -164,9 +171,19 @@ function deleteData(idToDelete) {
     (response) => {
       if (response.success) {
         console.log("Data deleted successfully");
-      // chrome.runtime.sendMessage({
-      //   action: "dataUpdated"
-      // })
+
+        // Fetch updated data and update UI
+        chrome.runtime.sendMessage({ action: "getData" }, (response) => {
+          if (response) {
+            console.log("Received data from background:");
+            data = response;
+            console.log(response);
+            updateDataInMainContent(data);
+          } else {
+            console.error("Failed to retrieve data from background");
+          }
+        });
+
         // Handle UI updates or other actions after successful deletion
       } else {
         console.error("Failed to delete data");
@@ -174,6 +191,7 @@ function deleteData(idToDelete) {
     }
   );
 }
+
 
 const form2 = document.getElementById("delete");
 const deleteId = document.getElementById("id");
@@ -183,3 +201,43 @@ form2.addEventListener("submit", function (e) {
   const idToDelete = deleteId.value;
   deleteData(idToDelete);
 });
+
+const mainContent = document.querySelector("body > main");
+console.log(mainContent);
+mainContent.textContent = JSON.stringify(data);
+
+function updateDataInMainContent(data) {
+  const html = data.map((item) => {
+    return `
+      <div class="card">
+        <div class="card__img">
+          <img src="${item.img}" alt="" />
+        </div>
+        <div class="card__content">
+          <h3 class="card__title">${item.titleValue}</h3>
+          <p class="card__description">${item.descriptionValue}</p>
+          <div>
+            <a href="${item.url}" class="card__link">Visit</a>
+            <button class="card__delete" data-id="${item.id}">Delete</button>
+            <button class="card__edit" data-id="${item.id}">Edit</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  mainContent.innerHTML = html.join("");
+
+  // Add event listener to the container element
+  mainContent.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target.classList.contains("card__delete")) {
+      const itemId = target.getAttribute("data-id");
+      // Call the deleteData function with the itemId
+      deleteData(itemId);
+    }
+    // Add similar logic for edit button if needed
+  });
+}
+
+

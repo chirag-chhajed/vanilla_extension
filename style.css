@@ -1,17 +1,19 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  margin: 0;
+  margin-block: 0;
   padding: 0;
+  max-width: 1440px;
+  margin-inline: auto;
   /* display: flex;
   justify-content: center;
   align-items: center; */
   min-height: 100vh;
 }
+
 /* Reset some default styles */
 body,
 h1 {
-  margin: 0;
   padding: 0;
 }
 
@@ -23,6 +25,73 @@ h1 {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+}
+
+main {
+  padding: 1rem;
+  display: grid;
+  place-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+  grid-auto-rows: auto;
+  gap: 1rem;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card__img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card__title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.card__description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.card__delete {
+  color: #666;
+  font-size: 0.8rem;
+  text-align: right;
+  cursor: pointer;
+}
+
+.card__delete:hover {
+  color: red;
+}
+
+.card__edit {
+  color: #666;
+  font-size: 0.8rem;
+  text-align: right;
+  cursor: pointer;
+}
+
+.card__edit:hover {
+  color: #646cff;
 }
 
 /* Company name styles */
@@ -43,7 +112,9 @@ h1 {
   background-color: #3aa856;
 }
 
-button.button, .button__icon, .button__text {
+button.button,
+.button__icon,
+.button__text {
   transition: all 0.3s;
 }
 
@@ -138,6 +209,7 @@ button.button:active {
 .form-submit button:hover {
   background-color: #0056b3;
 }
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
