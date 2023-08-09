@@ -11,7 +11,7 @@ function faviconURL(u) {
 async function fetchWithTimeout(url, timeout) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
-  console
+  console;
   try {
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -63,27 +63,27 @@ const isPinned = document.getElementById("isPinned");
 
 console.log(isPinned.checked);
 
-chrome.storage.local.get("storage", function (result) {
-  const storageData = result.storage; // Retrieve the "storage" value
+// chrome.storage.local.get("storage", function (result) {
+//   const storageData = result.storage; // Retrieve the "storage" value
 
-  if (typeof storageData !== "undefined") {
-    try {
-      const storage = JSON.parse(storageData); // Parse the JSON data
-      console.log("Get", storage);
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-    }
-  } else {
-    console.log("Storage data is undefined.");
-  }
-});
+//   if (typeof storageData !== "undefined") {
+//     try {
+//       const storage = JSON.parse(storageData); // Parse the JSON data
+//       console.log("Get", storage);
+//     } catch (error) {
+//       console.error("Error parsing JSON:", error);
+//     }
+//   } else {
+//     console.log("Storage data is undefined.");
+//   }
+// });
 
-chrome.storage.onChanged.addListener(function (changes, area) {
-  if (area === "local" && changes.storage) {
-    const newStorage = changes.storage.newValue || [];
-    console.log("Updated Storage:", newStorage);
-  }
-});
+// chrome.storage.onChanged.addListener(function (changes, area) {
+//   if (area === "local" && changes.storage) {
+//     const newStorage = changes.storage.newValue || [];
+//     console.log("Updated Storage:", newStorage);
+//   }
+// });
 let debounceTimeout;
 linkInput.addEventListener("input", async function () {
   clearTimeout(debounceTimeout); // Clear the previous timeout if it exists
@@ -123,22 +123,63 @@ form.addEventListener("submit", function (e) {
     img,
     isPin,
   };
-
-  chrome.storage.local.get("storage", function (result) {
-    const storedData = result.storage; // Retrieve the "storage" value
-
-    const newStorage = storedData ? JSON.parse(storedData) : [];
-    const updatedStorage = [...newStorage, data];
-
-    chrome.storage.local.set(
-      { storage: JSON.stringify(updatedStorage) },
-      function () {
-        console.log("Storage updated:", updatedStorage);
-      }
-    );
+  chrome.runtime.sendMessage({ action: "addData", data }, (response) => {
+    if (response.success) {
+      console.log("Data added to IndexedDB successfully");
+      linkInput.value = "";
+      title.value = "";
+      description.value = "";
+      isPinned.checked = false;
+    } else {
+      console.error("Failed to add data to IndexedDB");
+    }
   });
+  // Assuming you have set up the form and input elements correctly
+
+  // Assuming you have defined the deleteData function as you showed before
+
+  // chrome.storage.local.get("storage", function (result) {
+  //   const storedData = result.storage; // Retrieve the "storage" value
+
+  //   const newStorage = storedData ? JSON.parse(storedData) : [];
+  //   const updatedStorage = [...newStorage, data];
+
+  //   chrome.storage.local.set(
+  //     { storage: JSON.stringify(updatedStorage) },
+  //     function () {
+  //       console.log("Storage updated:", updatedStorage);
+  //     }
+  //   );
+  // });
   linkInput.value = "";
   title.value = "";
   description.value = "";
   isPinned.checked = false;
+});
+
+function deleteData(idToDelete) {
+  console.log("Deleting data with ID:", idToDelete);
+  chrome.runtime.sendMessage(
+    { action: "deleteData", id: idToDelete },
+    (response) => {
+      if (response.success) {
+        console.log("Data deleted successfully");
+      // chrome.runtime.sendMessage({
+      //   action: "dataUpdated"
+      // })
+        // Handle UI updates or other actions after successful deletion
+      } else {
+        console.error("Failed to delete data");
+      }
+    }
+  );
+}
+
+const form2 = document.getElementById("delete");
+const deleteId = document.getElementById("id");
+
+form2.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const idToDelete = deleteId.value;
+  deleteData(idToDelete);
 });

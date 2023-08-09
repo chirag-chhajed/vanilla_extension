@@ -13,6 +13,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "dexie": "^3.2.4",
     "nanoid": "^4.0.2"
   }
 }

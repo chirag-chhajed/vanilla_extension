@@ -2,10 +2,12 @@ lockfileVersion: 5.4
 
 specifiers:
   '@crxjs/vite-plugin': ^1.0.14
+  dexie: ^3.2.4
   nanoid: ^4.0.2
   vite: ^4.4.5
 
 dependencies:
+  dexie: 3.2.4
   nanoid: 4.0.2
 
 devDependencies:
@@ -721,6 +723,11 @@ packages:
     dependencies:
       ms: 2.1.2
     dev: true
+
+  /dexie/3.2.4:
+    resolution: {integrity: sha512-VKoTQRSv7+RnffpOJ3Dh6ozknBqzWw/F3iqMdsZg958R0AS8AnY9x9d1lbwENr0gzeGJHXKcGhAMRaqys6SxqA==}
+    engines: {node: '>=6.0'}
+    dev: false
 
   /dom-serializer/2.0.0:
     resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}

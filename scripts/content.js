@@ -52,6 +52,23 @@ function createModal() {
   form.appendChild(button1);
   form.appendChild(input2);
   form.appendChild(button2);
+  const refreshButton = document.createElement("button");
+  refreshButton.textContent = "Refresh Data";
+  modalContent.appendChild(refreshButton);
+
+  // Add an event listener to the refresh button
+  refreshButton.addEventListener("click", () => {
+    console.log("Refresh button clicked");
+    // Send a message to background.js to request updated data
+    chrome.runtime.sendMessage({ action: "requestUpdatedData" },response => {
+      if (response) {
+        console.log("Received updated data in content.js:", response);
+        // Update your content with the received data
+      } else {
+        console.error("Failed to retrieve updated data from background");
+      }
+    });
+  });
 
   // Add the form to the modal content
   modalContent.appendChild(form);
@@ -90,31 +107,28 @@ function createModal() {
 }
 
 
+// content.js
+
+// Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message) => {
-  console.log(message);
+  console.log(message)
   if (message.command === "open-popup") {
     // Create and show the modal when the message is received
     createModal();
+  } else if (message.command === "open_index") {
+    chrome.tabs.create({ url: "index.html" });
+  } else if (message.action === "updateTheData") {
+    console.log("Received updated data in content.js:", message.response);
+    // Update your content with the received data
   }
 });
 
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.command === "open_index") {
-    chrome.tabs.create({ url: "index.html" });
-  }
-})
-
-chrome.storage.local.get("storage", function (result) {
-  const storageData = result.storage; // Retrieve the "storage" value
-
-  if (typeof storageData !== "undefined") {
-    try {
-      const storage = JSON.parse(storageData); // Parse the JSON data
-      console.log("Get", storage);
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-    }
+// Send a message to request data from background.js
+chrome.runtime.sendMessage({ action: "getData" }, response => {
+  if (response) {
+    console.log("Received data from background:", response);
+    // Process the received data here
   } else {
-    console.log("Storage data is undefined.");
+    console.error("Failed to retrieve data from background");
   }
 });
