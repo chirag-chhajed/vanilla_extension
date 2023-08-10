@@ -32,8 +32,9 @@ main {
   display: grid;
   place-content: center;
   grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+  grid-template-rows: masonry;
   grid-auto-rows: auto;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .card {
@@ -45,7 +46,7 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 400px;
+  min-height: 250px;
 }
 
 .card__img {
@@ -53,6 +54,10 @@ main {
   height: 45px;
   object-fit: cover;
   border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #87CEFA;
 }
 
 .card__content {
@@ -182,7 +187,7 @@ button.button:active {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  font-weight: bold;
+font-weight: bold;
   font-size: 18px;
   color: #555;
 }
@@ -257,18 +262,35 @@ button.submit:hover {
 #toast-container {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  pointer-events: none;
+  right: 20px;
+  z-index: 9999;
 }
 
-#toast-container.show {
+.toast {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease-in-out;
   opacity: 1;
-  pointer-events: auto;
+}
+
+.toast.show {
+  opacity: 1;
+}
+.toast.success {
+  background-color: #4caf50;
+  /* Green shade */
+}
+
+.toast.error {
+  background-color: #f44336;
+  /* Red shade */
+}
+
+.toast.info {
+  background-color: #2196f3;
+  /* Blue shade */
 }

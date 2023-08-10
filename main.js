@@ -135,6 +135,8 @@ form.addEventListener("submit", function (e) {
     descriptionValue,
     img,
     isPin,
+    updatedAt: new Date(), // Set the current date and time
+    createdAt: new Date(), // Set the current date and time
   };
   chrome.runtime.sendMessage(
     { action: "addData", data: newData },
@@ -152,7 +154,7 @@ form.addEventListener("submit", function (e) {
             console.log("Received data from background:");
             console.log(response);
             updateDataInMainContent(response);
-            toastMessage("URL Added");
+            showToast("Link added successfully",3000)
             formContainer.classList.toggle("visible");
           } else {
             console.error("Failed to retrieve data from background");
@@ -254,7 +256,7 @@ function updateDataInMainContent(data) {
        updateDescriptionInput.value = selectedItem.descriptionValue;
        updateIsPinnedInput.checked = selectedItem.isPin;
        updateIdInput.value = selectedItem.id;
-
+      console.log(selectedItem)
        // Display the update form
        updateForm.classList.toggle("visible");
     }
@@ -274,22 +276,24 @@ closeButton.addEventListener("click", () => {
   formContainer.classList.toggle("visible");
 });
 
-const showToastButton = document.getElementById("show-toast");
+// const showToastButton = document.getElementById("show-toast");
 const toastContainer = document.getElementById("toast-container");
-const toastMessage = document.getElementById("toast-message");
 
-showToastButton.addEventListener("click", () => {
-  showToast("This is a toast message!", 3000); // Show the toast for 3 seconds
-});
+function showToast(message, duration, variant) {
+  const newToast = document.createElement("div");
+  newToast.classList.add("toast", variant);
+  newToast.textContent = message;
 
-function showToast(message, duration) {
-  toastMessage.textContent = message;
-  toastContainer.classList.add("show");
+  toastContainer.appendChild(newToast);
 
   setTimeout(() => {
-    toastContainer.classList.remove("show");
+    toastContainer.removeChild(newToast);
   }, duration);
 }
+showToast("Success message", 5000, "success");
+showToast("Error message", 5000, "error");
+showToast("Info message", 5000, "info");
+
 // Event listener for submitting the update form
 updateForm.addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -299,6 +303,7 @@ updateForm.addEventListener("submit", async function (e) {
     titleValue: updateTitleInput.value,
     descriptionValue: updateDescriptionInput.value,
     isPin: updateIsPinnedInput.checked,
+    updatedAt: new Date(),
   };
   
   // Send the updated data to your background script for updating
@@ -306,6 +311,7 @@ updateForm.addEventListener("submit", async function (e) {
     console.log(response,"response");
     if (response.success) {
       console.log("Data updated successfully");
+      updateForm.classList.toggle("visible");
       // Update your UI or perform any other actions
     } else {
       console.error("Failed to update data");

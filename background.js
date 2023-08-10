@@ -4,8 +4,9 @@ const db = new Dexie('MyExtensionDatabase');
 
 // Define the database schema
 db.version(1).stores({
-  storage: "++id, url, title, description, img, isPin",
+  storage: "++id, url, title, description, img, isPin, updatedAt, createdAt",
 });
+
 
 // Open the database
 db.open().catch(error => {
