@@ -1,5 +1,5 @@
 console.log("Hey I am running from a chrome extension, do you know it");
-import '../modal.css'
+import "../modal.css";
 // content.js
 // Function to create and show the modal
 let data;
@@ -27,7 +27,6 @@ function createModal() {
   // Create the modal content
   const modalContent = document.createElement("div");
   modalContent.classList.add("modalContent");
-  
 
   // Create the form element with the desired semantic
   const form = document.createElement("form");
@@ -62,7 +61,6 @@ function createModal() {
   input2.focus();
   const refreshButton = document.createElement("button");
   refreshButton.textContent = "Refresh Data";
-  
 
   const list = document.createElement("ul");
   list.classList.add("data-list");
@@ -79,15 +77,13 @@ function createModal() {
     list.appendChild(listItem);
   });
 
-  
-  
-
   // Add an event listener to the refresh button
   refreshButton.addEventListener("click", () => {
     console.log("Refresh button clicked");
     // Send a message to background.js to request updated data
-    chrome.runtime.sendMessage({ action: "requestUpdatedData" },response => {
+    chrome.runtime.sendMessage({ action: "requestUpdatedData" }, (response) => {
       if (response) {
+        data = response;
         console.log("Received updated data in content.js:", response);
         // Update your content with the received data
       } else {
@@ -106,7 +102,6 @@ function createModal() {
   setTimeout(() => {
     input2.focus();
   }, 0);
-
 
   // Add the container to the body
   document.body.appendChild(modalContainer);
@@ -138,12 +133,11 @@ function createModal() {
   document.addEventListener("keydown", handleEscKeyPress);
 }
 
-
 // content.js
 
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message) => {
-  console.log(message)
+  console.log(message);
   if (message.command === "open-popup") {
     // Create and show the modal when the message is received
     createModal();
@@ -156,4 +150,3 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 // Send a message to request data from background.js
-

@@ -32,12 +32,16 @@
     ],
     "commands": {
         "open-popup": {
-            "suggested_key": "Ctrl+Shift+Y",
+            "suggested_key": {
+                "default": "Ctrl+Shift+Y",
+                "mac": "Command+Shift+Y"
+            },
             "description": "Inject a script on the page"
         },
         "open_index": {
             "suggested_key": {
-                "default": "Ctrl+Shift+H"
+                "default": "Ctrl+Shift+H",
+                "mac": "Command+Shift+H"
             },
             "description": "Opens index.html"
         }
