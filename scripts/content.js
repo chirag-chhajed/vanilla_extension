@@ -2,18 +2,24 @@ console.log("Hey I am running from a chrome extension, do you know it");
 import '../modal.css'
 // content.js
 // Function to create and show the modal
+let data;
 let isModalOpen = false;
-
+chrome.runtime.sendMessage({ action: "getData" }, (response) => {
+  if (response) {
+    data = response;
+    console.log("Received data from background:", response);
+    // Process the received data here
+  } else {
+    console.error("Failed to retrieve data from background");
+  }
+});
 function createModal() {
   // Create the modal container
   if (isModalOpen) {
     return null;
   }
+
   const modalContainer = document.createElement("div");
-  let input = document.createElement("input");
-  input.setAttribute("type", "text");
-  input.setAttribute("id", "input");
-  input.setAttribute("placeholder", "Search ...");
 
   modalContainer.id = "customModal";
   modalContainer.classList.add("modal-container");
@@ -21,6 +27,7 @@ function createModal() {
   // Create the modal content
   const modalContent = document.createElement("div");
   modalContent.classList.add("modalContent");
+  
 
   // Create the form element with the desired semantic
   const form = document.createElement("form");
@@ -34,7 +41,7 @@ function createModal() {
   `;
 
   const input2 = document.createElement("input");
-  input2.classList.add("input");
+  input2.classList.add("iinnppuutt");
   input2.setAttribute("placeholder", "Type your text");
   input2.setAttribute("required", "");
   input2.setAttribute("type", "text");
@@ -52,9 +59,28 @@ function createModal() {
   form.appendChild(button1);
   form.appendChild(input2);
   form.appendChild(button2);
+  input2.focus();
   const refreshButton = document.createElement("button");
   refreshButton.textContent = "Refresh Data";
-  modalContent.appendChild(refreshButton);
+  
+
+  const list = document.createElement("ul");
+  list.classList.add("data-list");
+
+  // Loop through the data array and create list items
+  data.forEach((item) => {
+    const listItem = document.createElement("li");
+    const anchor = document.createElement("a");
+    anchor.href = item.url;
+    anchor.target = "_blank"; // Open link in a new tab
+    anchor.textContent = item.titleValue;
+
+    listItem.appendChild(anchor);
+    list.appendChild(listItem);
+  });
+
+  
+  
 
   // Add an event listener to the refresh button
   refreshButton.addEventListener("click", () => {
@@ -72,13 +98,20 @@ function createModal() {
 
   // Add the form to the modal content
   modalContent.appendChild(form);
+  modalContent.appendChild(list);
+  modalContent.appendChild(refreshButton);
 
   // Add the content to the container
   modalContainer.appendChild(modalContent);
+  
+
 
   // Add the container to the body
   document.body.appendChild(modalContainer);
   isModalOpen = true;
+  setTimeout(() => {
+    input2.focus();
+  }, 0);
 
   // Close the modal when clicking outside of it or pressing Esc key
   const closeModal = () => {
@@ -124,11 +157,4 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 // Send a message to request data from background.js
-chrome.runtime.sendMessage({ action: "getData" }, response => {
-  if (response) {
-    console.log("Received data from background:", response);
-    // Process the received data here
-  } else {
-    console.error("Failed to retrieve data from background");
-  }
-});
+
