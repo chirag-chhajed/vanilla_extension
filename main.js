@@ -4,6 +4,8 @@ import { nanoid } from "nanoid";
 let data;
 let formContainer = document.querySelector("div.form-container");
 
+console.log(window.matchMedia);
+
 chrome.runtime.sendMessage({ action: "getData" }, (response) => {
   if (response) {
     console.log("Received data from background:");
@@ -63,40 +65,12 @@ async function fetchTitleAndDescription(url) {
   }
 }
 
-// Example usage
-
-// const keyToRemove = "storage"; // Replace with the key you want to remove
-// chrome.storage.local.remove(keyToRemove, function () {
-//   console.log("Item removed from storage:", keyToRemove);
-// });
-
 const form = document.getElementById("form");
 const linkInput = document.getElementById("url");
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const isPinned = document.getElementById("isPinned");
 
-// chrome.storage.local.get("storage", function (result) {
-//   const storageData = result.storage; // Retrieve the "storage" value
-
-//   if (typeof storageData !== "undefined") {
-//     try {
-//       const storage = JSON.parse(storageData); // Parse the JSON data
-//       console.log("Get", storage);
-//     } catch (error) {
-//       console.error("Error parsing JSON:", error);
-//     }
-//   } else {
-//     console.log("Storage data is undefined.");
-//   }
-// });
-
-// chrome.storage.onChanged.addListener(function (changes, area) {
-//   if (area === "local" && changes.storage) {
-//     const newStorage = changes.storage.newValue || [];
-//     console.log("Updated Storage:", newStorage);
-//   }
-// });
 let debounceTimeout;
 linkInput.addEventListener("input", async function () {
   clearTimeout(debounceTimeout); // Clear the previous timeout if it exists
@@ -104,7 +78,7 @@ linkInput.addEventListener("input", async function () {
   debounceTimeout = setTimeout(async () => {
     const url = linkInput.value;
 
-    if (url) {
+    if (isValidURL(url)) {
       const { title: fetchedTitle, description: fetchedDescription } =
         await fetchTitleAndDescription(url);
       title.value = fetchedTitle;
@@ -115,10 +89,11 @@ linkInput.addEventListener("input", async function () {
     }
   }, 1000); // Adjust the debounce delay as needed
 });
-// function isValidURL(url) {
-//   const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-//   return pattern.test(url);
-// }
+
+function isValidURL(url) {
+  const regex = /https/i;
+  return regex.test(url);
+}
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -154,7 +129,7 @@ form.addEventListener("submit", function (e) {
             console.log("Received data from background:");
             console.log(response);
             updateDataInMainContent(response);
-            showToast("Link added successfully",3000)
+            showToast("Link added successfully", 3000);
             formContainer.classList.toggle("visible");
           } else {
             console.error("Failed to retrieve data from background");
@@ -195,18 +170,9 @@ function deleteData(idToDelete) {
   );
 }
 
-const form2 = document.getElementById("delete");
-const deleteId = document.getElementById("id");
-
-form2.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const idToDelete = deleteId.value;
-  deleteData(idToDelete);
-});
-
 const mainContent = document.querySelector("body > main");
-console.log(mainContent);
-mainContent.textContent = JSON.stringify(data);
+// console.log(mainContent);
+// mainContent.textContent = JSON.stringify(data);
 
 const updateForm = document.querySelector(".update-form-container");
 const updateUrlInput = document.getElementById("update-url");
@@ -223,13 +189,17 @@ function updateDataInMainContent(data) {
           <img src="${item.img}" alt="" />
         </div>
         <div class="card__content">
-          <h3 class="card__title">${item.titleValue}</h3>
-          <p class="card__description">${item.descriptionValue}</p>
-          <div>
-            <a href="${item.url}" class="card__link">Visit</a>
-            <button class="card__delete" data-id="${item.id}">Delete</button>
-            <button class="card__edit" data-id="${item.id}">Edit</button>
+          <a target="_blank" href="${item.url}" class="card__link"><h3 title="${item.titleValue}" class="card__title">${item.titleValue}</h3></a>
+          <p title="${item.descriptionValue}" class="card__description">${item.descriptionValue}</p>
+          <div class="card__buttons">
+            <button class="card__delete" data-id="${item.id}">
+              <img data-id="${item.id}" src="/delete.svg" alt="Delete" />
+            </button>
+            <button class="card__edit" data-id="${item.id}">
+              <img data-id="${item.id}" src="/edit.svg" alt="Edit" />
+            </button>
           </div>
+
         </div>
       </div>
     `;
@@ -240,25 +210,43 @@ function updateDataInMainContent(data) {
   // Add event listener to the container element
   mainContent.addEventListener("click", async (event) => {
     const target = event.target;
-    if (target.classList.contains("card__delete")) {
+    if (
+      target.classList.contains("card__delete") ||
+      target.closest(".card__delete img")
+    ) {
       const itemId = target.getAttribute("data-id");
-      target.disabled = true;
-      deleteData(itemId); // Wait for the deletion to finish
-      target.disabled = false; // Enable the delete button after deletion
-    } 
-    else if (target.classList.contains("card__edit")) {
-      const itemId = target.getAttribute("data-id");
-       const selectedItem = data.find((item) => item.id === itemId);
+      console.log("Deleting item with ID:", itemId);
 
-       // Prefill the update form fields with existing values
-       updateUrlInput.value = selectedItem.url;
-       updateTitleInput.value = selectedItem.titleValue;
-       updateDescriptionInput.value = selectedItem.descriptionValue;
-       updateIsPinnedInput.checked = selectedItem.isPin;
-       updateIdInput.value = selectedItem.id;
-      console.log(selectedItem)
-       // Display the update form
-       updateForm.classList.toggle("visible");
+      // Disable the button
+      target.disabled = true;
+
+      try {
+        deleteData(itemId);
+        console.log("Deletion finished successfully.");
+      } catch (error) {
+        console.error("Error while deleting:", error);
+      }
+
+      // Re-enable the button after the deletion is done
+      target.disabled = false;
+    } else if (
+      target.classList.contains("card__edit") ||
+      target.closest(".card__edit img")
+    ) {
+      const itemId = target.getAttribute("data-id");
+      console.log("Editing item with ID:", itemId);
+      const selectedItem = data.find((item) => item.id === itemId);
+      console.log(selectedItem);
+      // Prefill the update form fields with existing values
+      if (selectedItem) {
+        updateForm.classList.toggle("visible");
+        updateUrlInput.value = selectedItem.url;
+        updateTitleInput.value = selectedItem.titleValue;
+        updateDescriptionInput.value = selectedItem.descriptionValue;
+        updateIsPinnedInput.checked = selectedItem.isPin;
+        updateIdInput.value = selectedItem.id;
+      }
+      // Display the update form
     }
     // Add similar logic for edit button if needed
   });
@@ -275,6 +263,11 @@ closeButton.addEventListener("click", () => {
   console.log("clicked");
   formContainer.classList.toggle("visible");
 });
+let updateCloseButton = document.querySelector("span.close-button-update");
+updateCloseButton.addEventListener("click", () => {
+  console.log("clicked");
+  updateForm.classList.toggle("visible");
+});
 
 // const showToastButton = document.getElementById("show-toast");
 const toastContainer = document.getElementById("toast-container");
@@ -286,13 +279,22 @@ function showToast(message, duration, variant) {
 
   toastContainer.appendChild(newToast);
 
+  // Trigger a reflow to apply the initial opacity and transition
+  newToast.offsetHeight;
+
+  newToast.style.opacity = "1";
+
   setTimeout(() => {
-    toastContainer.removeChild(newToast);
+    newToast.style.opacity = "0";
+    newToast.addEventListener("transitionend", () => {
+      toastContainer.removeChild(newToast);
+    });
   }, duration);
 }
-showToast("Success message", 5000, "success");
-showToast("Error message", 5000, "error");
-showToast("Info message", 5000, "info");
+
+// showToast("Success message", 5000, "success");
+// showToast("Error message", 5000, "error");
+// showToast("Info message", 5000, "info");
 
 // Event listener for submitting the update form
 updateForm.addEventListener("submit", async function (e) {
@@ -305,16 +307,19 @@ updateForm.addEventListener("submit", async function (e) {
     isPin: updateIsPinnedInput.checked,
     updatedAt: new Date(),
   };
-  
+
   // Send the updated data to your background script for updating
-  chrome.runtime.sendMessage({ action: "updateData", data: updatedData,id:idToUpdate }, (response) => {
-    console.log(response,"response");
-    if (response.success) {
-      console.log("Data updated successfully");
-      updateForm.classList.toggle("visible");
-      // Update your UI or perform any other actions
-    } else {
-      console.error("Failed to update data");
+  chrome.runtime.sendMessage(
+    { action: "updateData", data: updatedData, id: idToUpdate },
+    (response) => {
+      console.log(response, "response");
+      if (response.success) {
+        console.log("Data updated successfully");
+        updateForm.classList.toggle("visible");
+        // Update your UI or perform any other actions
+      } else {
+        console.error("Failed to update data");
+      }
     }
-  });
+  );
 });

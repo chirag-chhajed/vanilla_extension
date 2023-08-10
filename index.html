@@ -33,7 +33,13 @@
     <main class="main"></main>
     <div class="form-container">
       <form id="form">
-        <span class="close-button">X</span>
+        <span class="close-button"
+          ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+            ></path>
+          </svg>
+        </span>
         <div class="form-field">
           <label for="url">URL:</label>
           <input type="text" id="url" name="url" required />
@@ -51,15 +57,23 @@
             required
           ></textarea>
         </div>
-        <div class="form-field">
-          <input type="checkbox" id="isPinned" name="isPin" />
-          <label for="isPin">Pin</label>
+        <div class="form-field check">
+          <input checked="checked" id="isPinned" type="checkbox" name="isPin" />
+          <div class="checkmark"></div>
+          <label for="isPinned">Pin it</label>
         </div>
         <button class="submit" type="submit">Submit</button>
       </form>
     </div>
     <div class="update-form-container">
       <form id="update-form">
+        <span class="close-button-update"
+          ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+            ></path>
+          </svg>
+        </span>
         <div class="form-field">
           <label for="update-url">URL:</label>
           <input type="text" id="update-url" name="update-url" required />
@@ -77,19 +91,21 @@
             required
           ></textarea>
         </div>
-        <div class="form-field">
-          <input type="checkbox" id="update-isPinned" name="update-isPin" />
-          <label for="update-isPin">Pin</label>
+        <div class="form-field check">
+          <input
+            checked="checked"
+            id="update-isPinned"
+            type="checkbox"
+            name="update-isPin"
+          />
+          <div class="checkmark"></div>
+          <label for="update-isPinned">Pin it</label>
         </div>
+
         <input type="hidden" id="update-id" name="update-id" />
         <button class="submit" type="submit">Update</button>
       </form>
     </div>
-
-    <form id="delete" action="">
-      <input type="text" name="id" id="id" autocomplete="off" />
-      <button>delete</button>
-    </form>
     <div id="toast-container">
       <span id="toast-message"></span>
     </div>
