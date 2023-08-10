@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "Hello Extensions",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {},
+  "icons": {
+    "16": "favicon-16x16.png",
+    "32": "favicon-32x32.png",
+    "128": "android-chrome-192x192.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "assets/content-script-loader.content.js-e0dec8f8-58423ba9.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ],
+      "css": [
+        "assets/content-9972a265.css"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker-loader.js",
+    "type": "module"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "favicon",
+    "unlimitedStorage",
+    "storage"
+  ],
+  "commands": {
+    "open-popup": {
+      "suggested_key": "Ctrl+Shift+Y",
+      "description": "Inject a script on the page"
+    },
+    "open_index": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+H"
+      },
+      "description": "Opens index.html"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "_favicon/*"
+      ],
+      "use_dynamic_url": false
+    },
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "resources": [
+        "assets/content.js-e0dec8f8.js"
+      ],
+      "use_dynamic_url": true
+    }
+  ]
+}
