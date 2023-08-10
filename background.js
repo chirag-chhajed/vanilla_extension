@@ -53,6 +53,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(request,"request")
+  if (request.action === "updateData") {
+    // Update data in IndexedDB
+    db.storage
+      .update(request.id, request.data) // Where `request.id` is the ID of the data to update
+      .then(() => {
+        sendResponse({ success: true });
+      })
+      .catch((error) => {
+        console.error("Error updating data in IndexedDB:", error);
+        sendResponse({ success: false });
+      });
+    return true; // Indicate that you will respond asynchronously
+  }
+});
+
+
 
 
 // Listen for messages from content scripts or other parts of the extension

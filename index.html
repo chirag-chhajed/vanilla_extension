@@ -31,29 +31,60 @@
       </button>
     </header>
     <main class="main"></main>
-<div class="form-container">
-  
-  <form id="form">
-    <span class="close-button">X</span>
-    <div class="form-field">
-      <label for="url">URL:</label>
-      <input type="text" id="url" name="url" required>
+    <div class="form-container">
+      <form id="form">
+        <span class="close-button">X</span>
+        <div class="form-field">
+          <label for="url">URL:</label>
+          <input type="text" id="url" name="url" required />
+        </div>
+        <div class="form-field">
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+        <div class="form-field">
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <input type="checkbox" id="isPinned" name="isPin" />
+          <label for="isPin">Pin</label>
+        </div>
+        <button class="submit" type="submit">Submit</button>
+      </form>
     </div>
-    <div class="form-field">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" required>
+    <div class="update-form-container">
+      <form id="update-form">
+        <div class="form-field">
+          <label for="update-url">URL:</label>
+          <input type="text" id="update-url" name="update-url" required />
+        </div>
+        <div class="form-field">
+          <label for="update-title">Title:</label>
+          <input type="text" id="update-title" name="update-title" required />
+        </div>
+        <div class="form-field">
+          <label for="update-description">Description:</label>
+          <textarea
+            id="update-description"
+            name="update-description"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <input type="checkbox" id="update-isPinned" name="update-isPin" />
+          <label for="update-isPin">Pin</label>
+        </div>
+        <input type="hidden" id="update-id" name="update-id" />
+        <button class="submit" type="submit">Update</button>
+      </form>
     </div>
-    <div class="form-field">
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" rows="4" required></textarea>
-    </div>
-    <div class="form-field">
-      <input type="checkbox" id="isPinned" name="isPin">
-      <label for="isPin">Pin</label>
-    </div>
-    <button class="submit" type="submit">Submit</button>
-  </form>
-</div>
 
     <form id="delete" action="">
       <input type="text" name="id" id="id" autocomplete="off" />

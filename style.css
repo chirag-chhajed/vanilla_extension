@@ -168,7 +168,8 @@ button.button:active {
   border: 1px solid #2e8644;
 }
 
-#form {
+#form,
+#update-form {
   background-color: #fff;
   padding: 1rem;
   position: relative;
@@ -186,7 +187,8 @@ button.button:active {
   color: #555;
 }
 
-.form-container {
+.form-container,
+.update-form-container {
   position: absolute;
   inset: 0;
   display: grid;

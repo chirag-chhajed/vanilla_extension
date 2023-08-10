@@ -2,13 +2,14 @@ import "./style.css";
 import { nanoid } from "nanoid";
 
 let data;
+let formContainer = document.querySelector("div.form-container");
 
 chrome.runtime.sendMessage({ action: "getData" }, (response) => {
   if (response) {
     console.log("Received data from background:");
     data = response;
     console.log(response);
-    updateDataInMainContent(data)
+    updateDataInMainContent(data);
     // Process the received data here
   } else {
     console.error("Failed to retrieve data from background");
@@ -151,6 +152,8 @@ form.addEventListener("submit", function (e) {
             console.log("Received data from background:");
             console.log(response);
             updateDataInMainContent(response);
+            toastMessage("URL Added");
+            formContainer.classList.toggle("visible");
           } else {
             console.error("Failed to retrieve data from background");
           }
@@ -161,8 +164,6 @@ form.addEventListener("submit", function (e) {
     }
   );
 });
-
-
 
 function deleteData(idToDelete) {
   console.log("Deleting data with ID:", idToDelete);
@@ -192,7 +193,6 @@ function deleteData(idToDelete) {
   );
 }
 
-
 const form2 = document.getElementById("delete");
 const deleteId = document.getElementById("id");
 
@@ -205,6 +205,13 @@ form2.addEventListener("submit", function (e) {
 const mainContent = document.querySelector("body > main");
 console.log(mainContent);
 mainContent.textContent = JSON.stringify(data);
+
+const updateForm = document.querySelector(".update-form-container");
+const updateUrlInput = document.getElementById("update-url");
+const updateTitleInput = document.getElementById("update-title");
+const updateDescriptionInput = document.getElementById("update-description");
+const updateIsPinnedInput = document.getElementById("update-isPinned");
+const updateIdInput = document.getElementById("update-id");
 
 function updateDataInMainContent(data) {
   const html = data.map((item) => {
@@ -233,28 +240,39 @@ function updateDataInMainContent(data) {
     const target = event.target;
     if (target.classList.contains("card__delete")) {
       const itemId = target.getAttribute("data-id");
-      target.disabled = true; 
+      target.disabled = true;
       deleteData(itemId); // Wait for the deletion to finish
       target.disabled = false; // Enable the delete button after deletion
+    } 
+    else if (target.classList.contains("card__edit")) {
+      const itemId = target.getAttribute("data-id");
+       const selectedItem = data.find((item) => item.id === itemId);
+
+       // Prefill the update form fields with existing values
+       updateUrlInput.value = selectedItem.url;
+       updateTitleInput.value = selectedItem.titleValue;
+       updateDescriptionInput.value = selectedItem.descriptionValue;
+       updateIsPinnedInput.checked = selectedItem.isPin;
+       updateIdInput.value = selectedItem.id;
+
+       // Display the update form
+       updateForm.classList.toggle("visible");
     }
     // Add similar logic for edit button if needed
   });
 }
 
 let button = document.querySelector("button.button");
-let formContainer = document.querySelector("div.form-container");
-button.addEventListener("click", ()=>{
+button.addEventListener("click", () => {
   // console.log("clicked")
   formContainer.classList.toggle("visible");
 });
 
 let closeButton = document.querySelector("span.close-button");
-closeButton.addEventListener("click", ()=>{
-  console.log("clicked")
+closeButton.addEventListener("click", () => {
+  console.log("clicked");
   formContainer.classList.toggle("visible");
-}
-);
-
+});
 
 const showToastButton = document.getElementById("show-toast");
 const toastContainer = document.getElementById("toast-container");
@@ -272,6 +290,25 @@ function showToast(message, duration) {
     toastContainer.classList.remove("show");
   }, duration);
 }
-
-
-
+// Event listener for submitting the update form
+updateForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const idToUpdate = updateIdInput.value;
+  const updatedData = {
+    url: updateUrlInput.value,
+    titleValue: updateTitleInput.value,
+    descriptionValue: updateDescriptionInput.value,
+    isPin: updateIsPinnedInput.checked,
+  };
+  
+  // Send the updated data to your background script for updating
+  chrome.runtime.sendMessage({ action: "updateData", data: updatedData,id:idToUpdate }, (response) => {
+    console.log(response,"response");
+    if (response.success) {
+      console.log("Data updated successfully");
+      // Update your UI or perform any other actions
+    } else {
+      console.error("Failed to update data");
+    }
+  });
+});
