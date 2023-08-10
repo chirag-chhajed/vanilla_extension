@@ -16,6 +16,11 @@ body,
 h1 {
   padding: 0;
 }
+*,*::before,*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 
 a {
   text-decoration: inherit;
@@ -62,6 +67,7 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 250px;
+  gap: 1rem;
 }
 
 .card__img {
@@ -70,7 +76,7 @@ main {
   object-fit: cover;
   border-radius: 50%;
   /* Make it circular */
-  background-color: #87CEFA;
+  background-color: #f1faee;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,7 +100,7 @@ main {
     -webkit-line-clamp: 2;
 }
 
-.card__description {
+ .card__description {
   font-size: 0.9rem;
   color: #666;
   overflow: hidden;
@@ -104,18 +110,11 @@ main {
   align-self: self-start;
 }
 
-.card__delete {
-  color: #666;
-  font-size: 0.8rem;
-  text-align: right;
-  cursor: pointer;
-}
-
 .card__buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  /* Center buttons vertically */
+  gap: 2rem;
 }
 
 .card__buttons>button {
@@ -126,13 +125,40 @@ main {
   justify-content: center;
   height: 32px;
   width: 32px;
-  background: none;
   padding: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  /* Red shade background color */
+  color: #f44336;
+  /* White color for the SVG */
+  transition: background-color 0.3s ease-in-out;
+  /* Apply transition to the background-color property */
 }
 
-.card__buttons>button img {
+.card__buttons>button svg {
   height: 24px;
   width: 24px;
+  fill: currentColor;
+  /* Inherit color from the button */
+}
+
+.card__buttons>button:hover {
+  /* White background color on hover */
+  color: #f22213;
+  /* Red rgb(240, 28, 13)olor for the SVG on hover */
+}
+
+.card__buttons .card__edit {
+  /* background-color: navy; */
+  color: navy;
+  /* Other styles for the edit button */
+}
+
+.card__buttons .card__edit:hover {
+  /* background-color: wheat; */
+    /* White background color on hover */
+    color: rgb(0, 0, 79);
+  /* Other styles for the edit button on hover */
 }
 
 /* Company name styles */
@@ -167,7 +193,7 @@ button.button .button__text {
 
 button.button .button__icon {
   position: absolute;
-  transform: translateX(105px);
+  transform: translateX(109px);
   height: 100%;
   width: 39px;
   background-color: #34974d;
@@ -191,7 +217,7 @@ button.button:hover .button__text {
 
 button.button:hover .button__icon {
   width: 148px;
-  transform: translateX(-5px);
+  transform: translateX(0px);
 }
 
 button.button:active .button__icon {
