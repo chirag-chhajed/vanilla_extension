@@ -229,15 +229,49 @@ function updateDataInMainContent(data) {
   mainContent.innerHTML = html.join("");
 
   // Add event listener to the container element
-  mainContent.addEventListener("click", (event) => {
+  mainContent.addEventListener("click", async (event) => {
     const target = event.target;
     if (target.classList.contains("card__delete")) {
       const itemId = target.getAttribute("data-id");
-      // Call the deleteData function with the itemId
-      deleteData(itemId);
+      target.disabled = true; 
+      deleteData(itemId); // Wait for the deletion to finish
+      target.disabled = false; // Enable the delete button after deletion
     }
     // Add similar logic for edit button if needed
   });
 }
+
+let button = document.querySelector("button.button");
+let formContainer = document.querySelector("div.form-container");
+button.addEventListener("click", ()=>{
+  // console.log("clicked")
+  formContainer.classList.toggle("visible");
+});
+
+let closeButton = document.querySelector("span.close-button");
+closeButton.addEventListener("click", ()=>{
+  console.log("clicked")
+  formContainer.classList.toggle("visible");
+}
+);
+
+
+const showToastButton = document.getElementById("show-toast");
+const toastContainer = document.getElementById("toast-container");
+const toastMessage = document.getElementById("toast-message");
+
+showToastButton.addEventListener("click", () => {
+  showToast("This is a toast message!", 3000); // Show the toast for 3 seconds
+});
+
+function showToast(message, duration) {
+  toastMessage.textContent = message;
+  toastContainer.classList.add("show");
+
+  setTimeout(() => {
+    toastContainer.classList.remove("show");
+  }, duration);
+}
+
 
 
