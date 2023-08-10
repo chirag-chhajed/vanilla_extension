@@ -103,15 +103,14 @@ function createModal() {
 
   // Add the content to the container
   modalContainer.appendChild(modalContent);
-  
+  setTimeout(() => {
+    input2.focus();
+  }, 0);
 
 
   // Add the container to the body
   document.body.appendChild(modalContainer);
   isModalOpen = true;
-  setTimeout(() => {
-    input2.focus();
-  }, 0);
 
   // Close the modal when clicking outside of it or pressing Esc key
   const closeModal = () => {
