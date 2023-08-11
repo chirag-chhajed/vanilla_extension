@@ -40,8 +40,8 @@
         },
         "open_index": {
             "suggested_key": {
-                "default": "Ctrl+Shift+H",
-                "mac": "Command+Shift+H"
+                "default": "Ctrl+Shift+S",
+                "mac": "Command+Shift+S"
             },
             "description": "Opens index.html"
         }
