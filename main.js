@@ -74,13 +74,23 @@ linkInput.addEventListener("input", async function () {
   clearTimeout(debounceTimeout); // Clear the previous timeout if it exists
 
   debounceTimeout = setTimeout(async () => {
-    const url = linkInput.value;
+    let url = linkInput.value.trim();
+    console.log(url);
 
-    if (isValidURL(url)) {
+    if (
+      !url.startsWith("https://") &&
+      !url.startsWith("http://") &&
+      !url.startsWith("www.")
+    ) {
+      url = `https://${url}`;
+    }
+
+    if (url) {
       const { title: fetchedTitle, description: fetchedDescription } =
         await fetchTitleAndDescription(url);
       title.value = fetchedTitle;
       description.value = fetchedDescription;
+      linkInput.value = url;
     } else {
       title.value = ""; // Clear title if URL is invalid
       description.value = ""; // Clear description if URL is invalid
@@ -88,10 +98,10 @@ linkInput.addEventListener("input", async function () {
   }, 1000); // Adjust the debounce delay as needed
 });
 
-function isValidURL(url) {
-  const regex = /https/i;
-  return regex.test(url);
-}
+// function isValidURL(url) {
+//   const regex = /https/i;
+//   return regex.test(url);
+// }
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
