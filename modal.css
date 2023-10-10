@@ -94,7 +94,8 @@ body.modal-open {
 .form:focus-within {
     border-radius: var(--after-border-radius);
 }
-input{
+
+input {
     all: unset;
 }
 
@@ -127,10 +128,12 @@ input:not(:placeholder-shown)~.reset {
     width: 17px;
     margin-top: 3px;
 }
+
 .data-list {
     list-style: none;
     padding: 0;
     margin-top: 1rem;
+    overflow:scroll ;
     /* Adjust margin as needed */
 }
 
@@ -147,9 +150,34 @@ input:not(:placeholder-shown)~.reset {
     transition: color 0.3s ease-in-out;
 }
 
-.data-list a:hover,.data-list a:focus {
+.data-list a:hover,
+.data-list a:focus {
     color: #f44336;
     /* Adjust hover color as needed */
 }
 
-/* These styles will help you format the list of bookmarks below the form and provide a basic visual presentation. You can further customize the styles according to your design preferences. */
+.card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.card div {
+    flex: 1;
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+}
+
+.card div h3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.card div p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}

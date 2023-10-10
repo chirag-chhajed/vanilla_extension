@@ -71,7 +71,14 @@ function createModal() {
     const anchor = document.createElement("a");
     anchor.href = item.url;
     anchor.target = "_blank"; // Open link in a new tab
-    anchor.textContent = item.titleValue;
+    anchor.innerHTML = `<div class="card">
+      <img src="${item.img}" alt="" />
+      <div>
+      <h3>${item.titleValue}</h3>
+      <p>${item.descriptionValue}</p>
+      </div>
+      ${item.isPin ? "pin" : "not pin"}
+    </div>`;
 
     listItem.appendChild(anchor);
     list.appendChild(listItem);
